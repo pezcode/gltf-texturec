@@ -1,0 +1,2 @@
+dataclasses-json==0.2.3
+pygltflib==1.11.0

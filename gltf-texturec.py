@@ -30,6 +30,7 @@ class GLTFConverter:
         self.file = file
         self.directory = Path(file).parent.resolve()
         self.gltf = GLTF2().load(file)
+        return self.gltf is not None
     
     def convert(self, outfile):
         if self.gltf is None:
@@ -65,8 +66,8 @@ class GLTFConverter:
     def convert_gltf_texture(self, texture_index, is_normal):
         texture = self.gltf.textures[texture_index]
         if texture.source not in self.converted:
-            image = self.gltf.images[texture.source]
             self.converted += [texture.source]
+            image = self.gltf.images[texture.source]
             new_filename = self.convert_image_file(image.uri, False)
             image.uri = new_filename
             # is this necessary? should only apply to buffer views
@@ -77,15 +78,21 @@ class GLTFConverter:
         inpath = str(self.directory.joinpath(filename))
         outpath = str(self.outdirectory.joinpath(new_filename))
         print("Converting %s" % inpath)
-        args = ["-f", inpath, "-o", outpath, "-t", self.texture_type, "-q", self.quality]
+        arguments = ["-f", inpath, "-o", outpath, "-t", self.texture_type, "-q", self.quality]
         if self.generate_mips:
-            args += ["--mips"]
+            arguments += ["--mips"]
         if is_normal:
-            args += ["--normalmap"]
-        proc = subprocess.run(["texturec"] + args, encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if proc.returncode != 0:
-            print(proc.stdout, file=sys.stderr)
+            arguments += ["--normalmap"]
+        self.run_texturec(arguments)
         return new_filename
+
+    def run_texturec(self, arguments):
+        try:
+            proc = subprocess.run(["texturec"] + arguments, encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if proc.returncode != 0:
+                print(proc.stdout, file=sys.stderr)
+        except FileNotFoundError:
+            sys.exit("texturec not found. Make sure its location is in the PATH environment variable.")
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -99,8 +106,9 @@ def main():
     parser.add_argument("-q", "--quality", type=str, choices=["default", "fastest", "highest"], default="default", help="Encoding quality")
     parser.add_argument("-m", "--mips", action="store_true", help="Generate mip-maps")
     args = parser.parse_args()
-    converter = GLTFConverter(args.format, args.type, args.q, args.mips)
-    converter.load(args.i)
+    converter = GLTFConverter(args.format, args.type, args.quality, args.mips)
+    if not converter.load(args.i):
+        sys.exit("Input file not found")
     converter.convert(args.o)
 
 if __name__ == "__main__":
