@@ -92,15 +92,15 @@ def main():
     # args like -f show up as optional arguments in the help, even if required
     # this is a workaround
     required = parser.add_argument_group('required arguments')
-    required.add_argument("-f", type=str, help="Input file path", required=True)
+    required.add_argument("-i", type=str, help="Input file path", required=True)
     required.add_argument("-o", type=str, help="Output file path", required=True)
-    parser.add_argument("--format", type=str, choices=GLTFConverter.mimetypes.keys(), default=".dds", help="File format")
+    parser.add_argument("-f", "--format", type=str, choices=GLTFConverter.mimetypes.keys(), default=".dds", help="File format")
     parser.add_argument("-t", "--type", type=str, default="BC3", help="Output format type (run texturec --formats for a list)")
-    parser.add_argument("-q", type=str, choices=["default", "fastest", "highest"], default="default", help="Encoding quality")
+    parser.add_argument("-q", "--quality", type=str, choices=["default", "fastest", "highest"], default="default", help="Encoding quality")
     parser.add_argument("-m", "--mips", action="store_true", help="Generate mip-maps")
     args = parser.parse_args()
     converter = GLTFConverter(args.format, args.type, args.q, args.mips)
-    converter.load(args.f)
+    converter.load(args.i)
     converter.convert(args.o)
 
 if __name__ == "__main__":

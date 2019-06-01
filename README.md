@@ -17,21 +17,21 @@ A Python script to convert textures in a GLTF 2.0 model with bgfx's [texturec](h
 ## Usage
 
 ```sh
-python gltf-texturec.py -f /path/to/model.gltf -o /path/to/new_model.gltf --format .dds --type BC3 --mips
+python gltf-texturec.py -i /path/to/model.gltf -o /path/to/new_model.gltf --format .dds --type BC3 --mips
 ```
 
 ### Options
 
-- **-f [file path]**: Input file path
+- **-if [file path]**: Input file path
 - **-o [file path]**: Output file path
-- **--format [format]**: Output texture file format. Default is .dds.
+- **-f, --format [format]**: Output texture file format. Default is .dds.
     - **.dds**: Direct Draw Surface
     - **.exr**: OpenEXR
     - **.hdr**: Radiance RGBE
     - **.ktx**: Khronos Texture
     - **.png**: Portable Network Graphics
-- **-t [type]**: Output format type (BC1/2/3/4/5, ETC1, PVR14, etc.). Run `texturec --formats` for a complete list of  supported types. Default is BC3.
-- **-q [quality]**: Encoding quality (default, fastest, highest)
+- **-t, --type [type]**: Output format type (BC1/2/3/4/5, ETC1, PVR14, etc.). Run `texturec --formats` for a complete list of  supported types. Default is BC3.
+- **-q, --quality [quality]**: Encoding quality (default, fastest, highest)
 - **-m, --mips**: Generate mip-maps
 
 ## Limitations
