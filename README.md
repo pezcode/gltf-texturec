@@ -22,7 +22,7 @@ python gltf-texturec.py -i /path/to/model.gltf -o /path/to/new_model.gltf --form
 
 ### Options
 
-- **-if [file path]**: Input file path
+- **-i [file path]**: Input file path
 - **-o [file path]**: Output file path
 - **-f, --format [format]**: Output texture file format. Default is .dds.
     - **.dds**: Direct Draw Surface
