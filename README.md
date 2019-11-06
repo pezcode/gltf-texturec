@@ -7,9 +7,6 @@ A Python script to convert textures in a GLTF 2.0 model with bgfx's [texturec](h
 - Python 3.6 or later
 - pygltflib:
     ```sh
-    # for some reason dataclasses-json is not registered as a dependency of pygltflib
-    # need to do this in two steps
-    pip install dataclasses-json
     pip install pygltflib
     ```
 - texturec must be in the PATH environment variable
@@ -38,4 +35,4 @@ python gltf-texturec.py -i /path/to/model.gltf -o /path/to/new_model.gltf --form
 
 - No support for images embedded in buffers
 - No support for KHR_materials_pbrSpecularGlossiness extension
-- If you convert to .dds, a correct implementation should probably use the MSFT_texture_dds extension. Unfortunately pygltflib doesn't support extensions.
+- If you convert to .dds, a correct implementation should probably use the MSFT_texture_dds extension.

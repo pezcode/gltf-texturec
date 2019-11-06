@@ -53,27 +53,27 @@ class GLTFConverter:
         pbr = mat.pbrMetallicRoughness
         if pbr is not None:
             if pbr.baseColorTexture is not None:
-                self.convert_gltf_texture(pbr.baseColorTexture.index, False)
+                self.convert_gltf_texture(pbr.baseColorTexture.index, is_linear = False)
             if pbr.metallicRoughnessTexture is not None:
-                self.convert_gltf_texture(pbr.metallicRoughnessTexture.index, False)
+                self.convert_gltf_texture(pbr.metallicRoughnessTexture.index, is_linear = True)
         if mat.normalTexture is not None:
-            self.convert_gltf_texture(mat.normalTexture.index, True)
+            self.convert_gltf_texture(mat.normalTexture.index, is_linear = True, is_normal = True)
         if mat.occlusionTexture is not None:
-            self.convert_gltf_texture(mat.occlusionTexture.index, False)
+            self.convert_gltf_texture(mat.occlusionTexture.index, is_linear = True)
         if mat.emissiveTexture is not None:
-            self.convert_gltf_texture(mat.emissiveTexture.index, False)
+            self.convert_gltf_texture(mat.emissiveTexture.index, is_linear = False)
 
-    def convert_gltf_texture(self, texture_index, is_normal):
+    def convert_gltf_texture(self, texture_index, is_linear, is_normal=False):
         texture = self.gltf.textures[texture_index]
         if texture.source not in self.converted:
             self.converted += [texture.source]
             image = self.gltf.images[texture.source]
-            new_filename = self.convert_image_file(image.uri, False)
+            new_filename = self.convert_image_file(image.uri, is_linear, is_normal)
             image.uri = new_filename
             # is this necessary? should only apply to buffer views
             image.mimeType = GLTFConverter.mimetypes[self.file_format]
 
-    def convert_image_file(self, filename, is_normal):
+    def convert_image_file(self, filename, is_linear, is_normal=False):
         new_filename = str(PurePath(filename).with_suffix(self.file_format))
         inpath = str(self.directory.joinpath(filename))
         outpath = str(self.outdirectory.joinpath(new_filename))
@@ -81,6 +81,8 @@ class GLTFConverter:
         arguments = ["-f", inpath, "-o", outpath, "-t", self.texture_type, "-q", self.quality]
         if self.generate_mips:
             arguments += ["--mips"]
+        if is_linear:
+            arguments += ["--linear"] # don't apply gamma correction
         if is_normal:
             arguments += ["--normalmap"]
         self.run_texturec(arguments)
