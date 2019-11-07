@@ -50,12 +50,18 @@ class GLTFConverter:
                 shutil.copy2(srcbuffer, dstbuffer)
     
     def convert_material(self, mat):
-        pbr = mat.pbrMetallicRoughness
-        if pbr is not None:
-            if pbr.baseColorTexture is not None:
-                self.convert_gltf_texture(pbr.baseColorTexture.index, is_linear = False)
-            if pbr.metallicRoughnessTexture is not None:
-                self.convert_gltf_texture(pbr.metallicRoughnessTexture.index, is_linear = True)
+        mr = mat.pbrMetallicRoughness
+        sg = mat.extensions.get('KHR_materials_pbrSpecularGlossiness')
+        if mr is not None:
+            if mr.baseColorTexture is not None:
+                self.convert_gltf_texture(mr.baseColorTexture.index, is_linear = False)
+            if mr.metallicRoughnessTexture is not None:
+                self.convert_gltf_texture(mr.metallicRoughnessTexture.index, is_linear = True)
+        elif sg is not None:
+            if 'diffuseTexture' in sg:
+                self.convert_gltf_texture(sg['diffuseTexture']['index'], is_linear = False)
+            if 'specularGlossinessTexture' in sg:
+                self.convert_gltf_texture(sg['specularGlossinessTexture']['index'], is_linear = True)
         if mat.normalTexture is not None:
             self.convert_gltf_texture(mat.normalTexture.index, is_linear = True, is_normal = True)
         if mat.occlusionTexture is not None:

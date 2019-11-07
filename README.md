@@ -1,6 +1,6 @@
 # gltf-texturec
 
-A Python script to convert textures in a GLTF 2.0 model with bgfx's [texturec](https://bkaradzic.github.io/bgfx/tools.html#texture-compiler-texturec) tool. Converts the textures and updates the filenames inside the .gltf file.
+A Python script to convert textures in a GLTF 2.0 model with bgfx's [texturec](https://bkaradzic.github.io/bgfx/tools.html#texture-compiler-texturec) tool. Converts the textures and updates the filenames inside the .gltf file. Both metallic/roughness and specular/glossiness (extension KHR_materials_pbrSpecularGlossiness) materials are supported.
 
 ## Prerequisites
 
@@ -34,5 +34,4 @@ python gltf-texturec.py -i /path/to/model.gltf -o /path/to/new_model.gltf --form
 ## Limitations
 
 - No support for images embedded in buffers
-- No support for KHR_materials_pbrSpecularGlossiness extension
 - If you convert to .dds, a correct implementation should probably use the MSFT_texture_dds extension.
