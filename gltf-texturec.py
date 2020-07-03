@@ -7,8 +7,8 @@ import shutil
 
 class GLTFConverter:
     mimetypes = {
-        '.dds':  'image/vnd-ms.dds',
-        '.exr':  'image/x-exr', # not a registered mimetype
+        '.dds':  'image/vnd.ms-dds',
+        '.exr':  'image/x-exr',
         '.hdr':  'image/vnd.radiance',
         '.ktx':  'image/ktx',
         '.png':  'image/png'
